@@ -1,5 +1,6 @@
 package minsait.ttaa.datio.engine;
 
+import minsait.ttaa.datio.common.Common;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -8,19 +9,12 @@ import org.apache.spark.sql.expressions.Window;
 import org.apache.spark.sql.expressions.WindowSpec;
 import org.jetbrains.annotations.NotNull;
 
-import minsait.ttaa.datio.common.naming.Field;
-//import scala.Enumeration.Val;
-import scala.collection.JavaConverters;
-import scala.collection.Seq;
-import scala.collection.Set;
+import java.io.IOException;
 
 import static minsait.ttaa.datio.common.Common.*;
 import static minsait.ttaa.datio.common.naming.PlayerInput.*;
 import static minsait.ttaa.datio.common.naming.PlayerOutput.*;
 import static org.apache.spark.sql.functions.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Transformer extends Writer {
     private SparkSession spark;
@@ -45,8 +39,6 @@ public class Transformer extends Writer {
         this.spark = spark;
         Dataset<Row> df = readInput();
 
-        df = readInput();
-
         df.printSchema();
 
         df = cleanData(df);
@@ -65,7 +57,7 @@ public class Transformer extends Writer {
         df.printSchema();
 
         // Uncomment when you want write your final output
-        //write(df);
+        write(df);
     }
 
     private Dataset<Row> columnSelection(Dataset<Row> df) {
@@ -97,6 +89,13 @@ public class Transformer extends Writer {
      * @return a Dataset readed from csv file
      */
     private Dataset<Row> readInput() {
+        try {
+            new Common();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         Dataset<Row> df = spark.read()
                 .option(HEADER, true)
                 .option(INFER_SCHEMA, true)
