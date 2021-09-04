@@ -2,6 +2,7 @@ package minsait.ttaa.datio.common.naming;
 
 import org.apache.spark.sql.Column;
 
+import static minsait.ttaa.datio.common.Common.FIELD;
 import static org.apache.spark.sql.functions.col;
 
 public class Field {
@@ -10,7 +11,7 @@ public class Field {
         this.name = name;
     }
 
-    private String name = "field";
+    private String name = FIELD;
 
     public String getName() {
         return name;

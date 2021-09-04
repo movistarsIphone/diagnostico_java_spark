@@ -57,7 +57,7 @@ public class Transformer extends Writer {
         df.printSchema();
 
         // Uncomment when you want write your final output
-        write(df);
+        //write(df);
     }
 
     private Dataset<Row> columnSelection(Dataset<Row> df) {
@@ -131,10 +131,10 @@ public class Transformer extends Writer {
 
         Column rank = rank().over(w);
 
-        Column rule = when(rank.$greater$eq(32), "D")
-        		.when(rank.between(27, 31), "C")
-        		.when(rank.between(23, 26), "B")
-        		.when(rank.$less(23), "A");
+        Column rule = when(rank.$greater$eq(32), D)
+        		.when(rank.between(27, 31), C)
+        		.when(rank.between(23, 26), B)
+        		.when(rank.$less(23), A);
         
     	df = df.withColumn(age_range.getName(), rule);
         return df;
@@ -158,7 +158,7 @@ public class Transformer extends Writer {
      * @return agregar al Dataset la columna "potential_vs_overall"
      */
     private Dataset<Row> potencialOverall(Dataset<Row> df) {        
-    	df = df.withColumn(potential_vs_overall.getName(), col("potential").divide(col("overall")));
+    	df = df.withColumn(potential_vs_overall.getName(), col(potential.getName()).divide(col(overall.getName())));
         return df;
     }
     
@@ -167,10 +167,10 @@ public class Transformer extends Writer {
      * @return agregar al Dataset la columna "age_range"
      */
     private Dataset<Row> filtroAgeNationality(Dataset<Row> df) {       
-        df.where(df.col("rank_by_nationality_position").leq(3));
-        df.where(df.col("age_range").isin("B","C")).where(df.col("potential_vs_overall").geq(1.15));
-        df.where(df.col("age_range").isin("A")).where(df.col("potential_vs_overall").geq(1.25));
-        df.where(df.col("age_range").isin("D")).where(df.col("rank_by_nationality_position").leq(5));
+        df.where(df.col(rank_by_nationality_position.getName()).leq(3));
+        df.where(df.col(age_range.getName()).isin(B,C)).where(df.col(potential_vs_overall.getName()).geq(1.15));
+        df.where(df.col(age_range.getName()).isin(A)).where(df.col(potential_vs_overall.getName()).geq(1.25));
+        df.where(df.col(age_range.getName()).isin(D)).where(df.col(rank_by_nationality_position.getName()).leq(5));
         return df;
     }
     
@@ -191,9 +191,9 @@ public class Transformer extends Writer {
 
         Column rank = rank().over(w);
 
-        Column rule = when(rank.$less(10), "A")
-                .when(rank.$less(50), "B")
-                .otherwise("C");
+        Column rule = when(rank.$less(10), A)
+                .when(rank.$less(50), B)
+                .otherwise(C);
 
         df = df.withColumn(catHeightByPosition.getName(), rule);
         return df;
