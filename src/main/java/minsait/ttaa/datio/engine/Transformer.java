@@ -9,7 +9,7 @@ import org.apache.spark.sql.expressions.WindowSpec;
 import org.jetbrains.annotations.NotNull;
 
 import minsait.ttaa.datio.common.naming.Field;
-import scala.Enumeration.Val;
+//import scala.Enumeration.Val;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
 import scala.collection.Set;
@@ -25,9 +25,27 @@ import java.util.Arrays;
 public class Transformer extends Writer {
     private SparkSession spark;
 
+    public Transformer(){
+
+    }
+
+    /** Inicio - MACH **/
+    public Dataset<Row> TransformerPuntoCuatro(@NotNull SparkSession spark,Dataset<Row> df) {
+        this.spark = spark;
+        df = cleanData(df);
+        df = rangoEdad(df);
+        df = posicionNacionalidad(df);
+        df = potencialOverall(df); //Punto 4
+        df = columnSelection(df);
+        return df;
+    }
+    /** Fin - MACH **/
+
     public Transformer(@NotNull SparkSession spark) {
         this.spark = spark;
         Dataset<Row> df = readInput();
+
+        df = readInput();
 
         df.printSchema();
 
@@ -47,7 +65,7 @@ public class Transformer extends Writer {
         df.printSchema();
 
         // Uncomment when you want write your final output
-        write(df);
+        //write(df);
     }
 
     private Dataset<Row> columnSelection(Dataset<Row> df) {
@@ -181,8 +199,5 @@ public class Transformer extends Writer {
         df = df.withColumn(catHeightByPosition.getName(), rule);
         return df;
     }
-
-
-
 
 }
